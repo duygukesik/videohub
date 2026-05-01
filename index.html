@@ -32,15 +32,13 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 <input type="text" id="searchInput" placeholder="Search your collection...">
             </div>
-            <div class="filter-box">
+            <div class="filter-box" style="display: flex; gap: 0.5rem;">
                 <select id="categoryFilter">
-                    <option value="All">All Categories</option>
-                    <option value="Music">Music</option>
-                    <option value="Education">Education</option>
-                    <option value="Gaming">Gaming</option>
-                    <option value="Tech">Tech</option>
-                    <option value="Other">Other</option>
+                    <!-- Populated dynamically -->
                 </select>
+                <button id="addCategoryBtn" class="btn-primary" style="padding: 0.5rem 1rem;" title="Add Category">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg>
+                </button>
             </div>
         </section>
 
@@ -72,11 +70,7 @@
                 <div class="input-group">
                     <label>Category</label>
                     <select id="videoCategory">
-                        <option value="Music">Music</option>
-                        <option value="Education">Education</option>
-                        <option value="Gaming">Gaming</option>
-                        <option value="Tech">Tech</option>
-                        <option value="Other">Other</option>
+                        <!-- Populated dynamically -->
                     </select>
                 </div>
                 <button type="submit" class="btn-primary w-full" style="justify-content: center;">Save to Hub</button>

@@ -1,5 +1,6 @@
 // ====== State ======
 let videos = JSON.parse(localStorage.getItem('videohub_v2')) || [];
+let categories = JSON.parse(localStorage.getItem('videohub_categories')) || ['Music', 'Education', 'Gaming', 'Tech', 'Other'];
 
 // ====== DOM Elements ======
 const DOMElements = {
@@ -13,7 +14,9 @@ const DOMElements = {
     closeAddBtn: document.getElementById('closeAddBtn'),
     playerModal: document.getElementById('playerModal'),
     playerWrapper: document.getElementById('playerWrapper'),
-    closePlayerBtn: document.getElementById('closePlayerBtn')
+    closePlayerBtn: document.getElementById('closePlayerBtn'),
+    addCategoryBtn: document.getElementById('addCategoryBtn'),
+    videoCategory: document.getElementById('videoCategory')
 };
 
 // ====== Utilities ======
@@ -27,6 +30,10 @@ const saveState = () => {
     localStorage.setItem('videohub_v2', JSON.stringify(videos));
 };
 
+const saveCategories = () => {
+    localStorage.setItem('videohub_categories', JSON.stringify(categories));
+};
+
 const escapeHTML = (str) => {
     return str.replace(/[&<>'"]/g, 
         tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag])
@@ -34,6 +41,17 @@ const escapeHTML = (str) => {
 };
 
 // ====== Rendering ======
+const renderCategories = () => {
+    DOMElements.filter.innerHTML = '<option value="All">All Categories</option>';
+    DOMElements.videoCategory.innerHTML = '';
+    
+    categories.forEach(cat => {
+        const escapedCat = escapeHTML(cat);
+        DOMElements.filter.innerHTML += `<option value="${escapedCat}">${escapedCat}</option>`;
+        DOMElements.videoCategory.innerHTML += `<option value="${escapedCat}">${escapedCat}</option>`;
+    });
+};
+
 const renderVideos = () => {
     const searchTerm = DOMElements.search.value.toLowerCase();
     const category = DOMElements.filter.value;
@@ -130,6 +148,20 @@ window.playVideo = (ytId) => {
     openModal(DOMElements.playerModal);
 };
 
+const addCategory = () => {
+    const newCat = prompt("Enter new category name:");
+    if (newCat && newCat.trim() !== '') {
+        const trimmed = newCat.trim();
+        if (!categories.includes(trimmed)) {
+            categories.push(trimmed);
+            saveCategories();
+            renderCategories();
+        } else {
+            alert("Category already exists!");
+        }
+    }
+};
+
 // ====== Modals ======
 const openModal = (modal) => modal.classList.remove('hidden');
 const closeModal = (modal) => {
@@ -146,6 +178,7 @@ DOMElements.closePlayerBtn.addEventListener('click', () => closeModal(DOMElement
 DOMElements.addForm.addEventListener('submit', addVideo);
 DOMElements.search.addEventListener('input', renderVideos);
 DOMElements.filter.addEventListener('change', renderVideos);
+DOMElements.addCategoryBtn.addEventListener('click', addCategory);
 
 // Close modals on outside click
 document.addEventListener('click', (e) => {
@@ -155,4 +188,5 @@ document.addEventListener('click', (e) => {
 });
 
 // ====== Init ======
+renderCategories();
 renderVideos();
