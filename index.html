@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoHub | Premium YouTube Collection</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-background"></div>
+    
+    <header class="glass-header">
+        <div class="header-container">
+            <div class="brand">
+                <div class="logo-icon"></div>
+                <h1>Video<span>Hub</span></h1>
+            </div>
+            <button id="addBtn" class="btn-primary">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14m-7-7h14"/></svg>
+                <span>Add Video</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="controls glass-panel">
+            <div class="search-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" id="searchInput" placeholder="Search your collection...">
+            </div>
+            <div class="filter-box">
+                <select id="categoryFilter">
+                    <option value="All">All Categories</option>
+                    <option value="Music">Music</option>
+                    <option value="Education">Education</option>
+                    <option value="Gaming">Gaming</option>
+                    <option value="Tech">Tech</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </section>
+
+        <section id="videoGrid" class="video-grid">
+            <!-- Videos inject here -->
+        </section>
+
+        <div id="emptyState" class="empty-state hidden">
+            <div class="empty-icon">🎬</div>
+            <h2>No videos yet</h2>
+            <p>Start building your collection by adding your first YouTube video.</p>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <div id="addModal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <button class="close-btn" id="closeAddBtn">&times;</button>
+            <h2>Add New Video</h2>
+            <form id="addForm">
+                <div class="input-group">
+                    <label>Video Title</label>
+                    <input type="text" id="videoTitle" required placeholder="My Awesome Video">
+                </div>
+                <div class="input-group">
+                    <label>YouTube Link</label>
+                    <input type="url" id="videoUrl" required placeholder="https://youtube.com/watch?v=...">
+                </div>
+                <div class="input-group">
+                    <label>Category</label>
+                    <select id="videoCategory">
+                        <option value="Music">Music</option>
+                        <option value="Education">Education</option>
+                        <option value="Gaming">Gaming</option>
+                        <option value="Tech">Tech</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary w-full" style="justify-content: center;">Save to Hub</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="playerModal" class="modal-overlay hidden">
+        <div class="modal-content player-content">
+            <button class="close-btn player-close" id="closePlayerBtn">&times;</button>
+            <div class="video-wrapper" id="playerWrapper">
+                <!-- iframe inject here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
