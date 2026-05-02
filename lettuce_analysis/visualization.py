@@ -1,6 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.dates as mdates
 from config import Config
 
 class Visualizer:
@@ -24,6 +25,7 @@ class Visualizer:
         plt.xlabel("Tarih / Saat", fontsize=14)
         plt.ylabel(ylabel, fontsize=14)
         plt.xticks(rotation=45)
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M'))
         plt.tight_layout()
         
         save_path = os.path.join(self.output_dir, filename)
@@ -50,6 +52,7 @@ class Visualizer:
         plt.xlabel("Tarih / Saat", fontsize=14)
         plt.ylabel(ylabel, fontsize=14)
         plt.xticks(rotation=45)
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M'))
         plt.legend()
         plt.tight_layout()
         

@@ -37,7 +37,7 @@ class FeatureExtractor:
             mean_brightness = 0.0
 
         return {
-            'leaf_area': leaf_area_pixels,
-            'green_intensity': mean_green_intensity,
-            'brightness_value': mean_brightness
+            'leaf_area_px': float(leaf_area_pixels),
+            'green_index': float(mean_green_intensity),
+            'brightness_value': float(mean_brightness)
         }

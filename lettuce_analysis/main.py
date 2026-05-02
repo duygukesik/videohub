@@ -50,6 +50,7 @@ def main():
         features = feature_extractor.extract_features(roi_img, roi_mask)
         if features:
             features['timestamp'] = timestamp
+            features['plant_id'] = 'plant_01'
             features['filename'] = os.path.basename(filepath)
             records.append(features)
             
@@ -67,7 +68,7 @@ def main():
     
     # Save raw hourly data
     csv_path = os.path.join(Config.OUTPUT_DIR, "lettuce_hourly_data.csv")
-    df_hourly.to_csv(csv_path)
+    df_hourly.to_csv(csv_path, float_format='%.4f')
     print(f"Saved hourly data to {csv_path}")
 
     print("\n--- Step 5: Time Series Interpolation (5-Min) ---")
@@ -76,20 +77,33 @@ def main():
         
         # Save interpolated data
         csv_5min_path = os.path.join(Config.OUTPUT_DIR, "lettuce_5min_interpolated_data.csv")
-        df_5min.to_csv(csv_5min_path)
+        df_5min.to_csv(csv_5min_path, float_format='%.4f')
         print(f"Saved 5-min interpolated data to {csv_5min_path}")
+        
+        # Save exact Parquet format requested by user
+        parquet_path = os.path.join(Config.OUTPUT_DIR, "cv_features.parquet")
+        df_parquet = df_5min.reset_index()
+        # Ensure only the exact requested columns are included
+        cols_to_keep = ['timestamp', 'plant_id', 'leaf_area_px', 'green_index']
+        df_parquet = df_parquet[[c for c in cols_to_keep if c in df_parquet.columns]]
+        df_parquet.to_parquet(parquet_path, index=False)
+        print(f"Saved required Parquet format to {parquet_path}")
     except Exception as e:
-        print(f"Interpolation failed: {e}")
+        import traceback
+        traceback.print_exc()
+        print(f"Interpolation/Parquet failed: {e}")
         df_5min = pd.DataFrame()
 
     print("\n--- Step 6: Visualization ---")
-    # Hourly Plot
-    visualizer.plot_time_series(df_hourly, 'leaf_area', 'Saatlik Yaprak Alanı Gelişimi', 'Alan (Piksel)', 'hourly_leaf_area.png')
+    # Hourly Plots
+    visualizer.plot_time_series(df_hourly, 'leaf_area_px', 'Saatlik Yaprak Alanı Gelişimi', 'Alan (Piksel)', 'hourly_leaf_area.png')
+    visualizer.plot_time_series(df_hourly, 'green_index', 'Saatlik Yeşil Renk Yoğunluğu', 'Yoğunluk (0-255)', 'hourly_green_intensity.png')
+    visualizer.plot_time_series(df_hourly, 'growth_rate_abs', 'Saatlik Büyüme Hızı', 'Alan Farkı (Piksel)', 'hourly_growth_rate.png')
     
     # Comparison Plots (Hourly vs 5-Min)
     if not df_5min.empty:
-        visualizer.plot_comparison(df_hourly, df_5min, 'leaf_area', 'Yaprak Alanı: Saatlik vs 5-Dakika Tahmin', 'Alan (Piksel)', 'comparison_leaf_area.png')
-        visualizer.plot_comparison(df_hourly, df_5min, 'green_intensity', 'Yeşil Renk Yoğunluğu: Saatlik vs 5-Dakika Tahmin', 'Yoğunluk (0-255)', 'comparison_green_intensity.png')
+        visualizer.plot_comparison(df_hourly, df_5min, 'leaf_area_px', 'Yaprak Alanı: Saatlik vs 5-Dakika Tahmin', 'Alan (Piksel)', 'comparison_leaf_area.png')
+        visualizer.plot_comparison(df_hourly, df_5min, 'green_index', 'Yeşil Renk Yoğunluğu: Saatlik vs 5-Dakika Tahmin', 'Yoğunluk (0-255)', 'comparison_green_intensity.png')
         visualizer.plot_comparison(df_hourly, df_5min, 'growth_rate_abs', 'Büyüme Hızı (Mutlak Değişim)', 'Alan Farkı (Piksel)', 'comparison_growth_rate.png')
     
     print("\nPipeline Execution Complete!")

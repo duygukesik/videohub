@@ -21,7 +21,8 @@ class DataLoader:
             if f.lower().endswith(self.valid_extensions)
         ]
         
-        # Sort files. We try to extract timestamp from filename, fallback to modification time.
+        # Filter out files without a valid timestamp, then sort
+        all_files = [f for f in all_files if self._extract_timestamp(f) is not None]
         all_files.sort(key=self._extract_timestamp)
         
         if Config.TEST_MODE:
@@ -48,8 +49,8 @@ class DataLoader:
             except ValueError:
                 pass
         
-        # Fallback to modification time
-        return datetime.fromtimestamp(os.path.getmtime(filepath))
+        # Avoid using modification time to prevent ruining the timeline graph
+        return None
 
     def is_valid_image(self, image):
         """
@@ -85,6 +86,9 @@ class DataLoader:
         
         for filepath in files:
             timestamp = self._extract_timestamp(filepath)
+            if timestamp is None:
+                continue
+            
             
             # Read image
             img = cv2.imread(filepath)
